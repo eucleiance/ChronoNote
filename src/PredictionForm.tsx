@@ -24,7 +24,8 @@ function PredictionForm() {
 
     // Prepare the request payload with parsed numbers
     const requestData = {
-      features: Object.fromEntries(Object.entries(form).map(([key, value]) => [key, parseFloat(value)])),
+      features: Object.fromEntries(Object.entries(form)),
+
     };
 
     try {
