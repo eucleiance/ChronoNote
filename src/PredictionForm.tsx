@@ -14,8 +14,10 @@ function PredictionForm() {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    setForm({ ...form, [name]: value });
+    setForm({ ...form, [name]: parseFloat(value) }); // 👈 convert string to number!
   };
+
+
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
