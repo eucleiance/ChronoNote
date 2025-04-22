@@ -2,20 +2,35 @@ import { useState } from 'react';
 
 function PredictionForm() {
   const [form, setForm] = useState({
-    'min-temp': 8.0, // Default value
-    'max-temp': 17.0, // Default value
-    niederschlag: 0.1, // Default value
-    sonnenstunden: 6.0, // Default value
-    wochentag: 2, // Default: Wednesday
-    monat: 4, // Default: April
+    'min-temp': 13.0,
+    'max-temp': 25.0,
+    niederschlag: 4,
+    sonnenstunden: 7.0,
+    wochentag: 4,
+    monat: 7,
   });
 
   const [prediction, setPrediction] = useState<number | null>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    setForm({ ...form, [name]: parseFloat(value) }); // 👈 convert string to number!
+    const newValue = parseFloat(value);
+
+    setForm(prevForm => {
+      let updatedForm = { ...prevForm, [name]: newValue };
+
+      if (name === 'min-temp' && newValue > prevForm['max-temp']) {
+        updatedForm['max-temp'] = newValue;
+      }
+
+      if (name === 'max-temp' && newValue < prevForm['min-temp']) {
+        updatedForm['min-temp'] = newValue;
+      }
+
+      return updatedForm;
+    });
   };
+
 
 
 
@@ -49,65 +64,82 @@ function PredictionForm() {
 
   return (
     <div>
-      <h1>Bike Traffic Prediction</h1>
-
-      <div>
-        <label htmlFor="min-temp">Min Temp (°C): {form['min-temp']}°C</label>
+      <h1 className="heading">Bike Traffic Prediction</h1>
+      <div className="options flex-col space-y-1">
+        <div className="flex justify-between">
+          <label htmlFor="min-temp">Min Temp (°C)</label>
+          <span>{form['min-temp']}°C</span>
+        </div>
         <input
+          className="input-width w-full"
           type="range"
           id="min-temp"
           name="min-temp"
-          min="-10"
-          max="30"
+          min="-31.6"
+          max="37"
           value={form['min-temp']}
           onChange={handleChange}
           step="0.1"
         />
       </div>
 
-      <div>
-        <label htmlFor="max-temp">Max Temp (°C): {form['max-temp']}°C</label>
+
+      <div className='options flex-col space-y-1'>
+        <div className="flex justify-between">
+          <label htmlFor="max-temp">Max Temp (°C)</label>
+          <span>{form['max-temp']}°C</span>
+        </div>
         <input
+          className="input-width w-full"
           type="range"
           id="max-temp"
           name="max-temp"
-          min="-10"
-          max="40"
+          min="-31.6"
+          max="37"
           value={form['max-temp']}
           onChange={handleChange}
           step="0.1"
         />
       </div>
 
-      <div>
-        <label htmlFor="niederschlag">Precipitation (mm): {form['niederschlag']}mm</label>
+      <div className='options flex-col space-y-1'>
+        <div className="flex justify-between">
+          <label htmlFor="niederschlag">Precipitation (mm)</label>
+          <span>{form['niederschlag']}mm</span>
+        </div>
         <input
+          className="input-width w-full"
           type="range"
           id="niederschlag"
           name="niederschlag"
           min="0"
-          max="100"
+          max="155"
           value={form['niederschlag']}
           onChange={handleChange}
           step="0.1"
         />
       </div>
 
-      <div>
-        <label htmlFor="sonnenstunden">Sun Hours: {form['sonnenstunden']} hrs</label>
+      <div className='options flex-col space-y-1'>
+        <div className="flex justify-between">
+          <label htmlFor="sonnenstunden">Sun Hours</label>
+          <span>{form['sonnenstunden']} hrs</span>
+        </div>
         <input
+          className="input-width w-full"
           type="range"
           id="sonnenstunden"
           name="sonnenstunden"
           min="0"
-          max="12"
+          max="15"
           value={form['sonnenstunden']}
           onChange={handleChange}
           step="0.1"
         />
       </div>
 
-      <div>
+
+      <div className='options-2 flex justify-between'>
         <label htmlFor="wochentag">Day of the Week:</label>
         <select
           id="wochentag"
@@ -125,7 +157,7 @@ function PredictionForm() {
         </select>
       </div>
 
-      <div>
+      <div className='options-2 flex justify-between'>
         <label htmlFor="monat">Month:</label>
         <select
           id="monat"
@@ -147,6 +179,7 @@ function PredictionForm() {
           <option value="12">December</option>
         </select>
       </div>
+
 
       <button onClick={handleSubmit}>Predict</button>
 
