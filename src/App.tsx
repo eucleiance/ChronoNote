@@ -1,6 +1,6 @@
-import './App.css'
-import './index.css'
-import Boilerplate from './boilerplate'
+import './styles/App.css'
+import './styles/index.css'
+import Boilerplate from './projects'
 
 function App() {
 

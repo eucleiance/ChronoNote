@@ -2,11 +2,11 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import App from './App.tsx'
-import PredictionForm from './PredictionForm.tsx' // ⬅️ You'll create this next
-import Editor from './Editor.tsx'
-import Page from './page.tsx'
+import PredictionForm from './mbtp/PredictionForm.tsx' // ⬅️ You'll create this next
+import Page from './editor/page.tsx'
+import Editor from './editor/Editor.tsx'
 
-import './index.css'
+import './styles/index.css'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -14,8 +14,7 @@ createRoot(document.getElementById('root')!).render(
       <Routes>
         <Route path="/" element={<App />} />
         <Route path="/prediction" element={<PredictionForm />} />
-        <Route path="/editor" element={<Editor />} />
-        <Route path="/page" element={<Page />} />
+        <Route path="/editor" element={<Page />} />
       </Routes>
     </BrowserRouter>
   </StrictMode>,
