@@ -49,7 +49,8 @@ button {
   transition: border-color 0.25s;
 }
 button:hover {
-  border-color: #ff7316;
+  @apply border-amber-600;
+  @apply drop-shadow-amber-600 drop-shadow-lg;
 }
 button:focus,
 button:focus-visible {
@@ -70,14 +71,17 @@ button:focus-visible {
 }
 
 
-.input-width {
-  /* @apply bg-amber-600; */
+.slider {
+  @apply accent-amber-600;
 }
 
-.input-width:hover {
-  @apply drop-shadow-amber-600 drop-shadow-md;
+.slider:hover {
+  @apply drop-shadow-amber-600 drop-shadow-lg;
 }
 
+.pt {
+  @apply mt-4;
+}
 
 @media (prefers-color-scheme: light) {
   :root {

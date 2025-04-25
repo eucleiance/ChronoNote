@@ -71,7 +71,7 @@ function PredictionForm() {
           <span>{form['min-temp']}°C</span>
         </div>
         <input
-          className="input-width w-full"
+          className="slider w-full"
           type="range"
           id="min-temp"
           name="min-temp"
@@ -90,7 +90,7 @@ function PredictionForm() {
           <span>{form['max-temp']}°C</span>
         </div>
         <input
-          className="input-width w-full"
+          className="slider w-full"
           type="range"
           id="max-temp"
           name="max-temp"
@@ -108,7 +108,7 @@ function PredictionForm() {
           <span>{form['niederschlag']}mm</span>
         </div>
         <input
-          className="input-width w-full"
+          className="slider w-full"
           type="range"
           id="niederschlag"
           name="niederschlag"
@@ -126,7 +126,7 @@ function PredictionForm() {
           <span>{form['sonnenstunden']} hrs</span>
         </div>
         <input
-          className="input-width w-full"
+          className="slider w-full"
           type="range"
           id="sonnenstunden"
           name="sonnenstunden"
@@ -184,7 +184,7 @@ function PredictionForm() {
       <button onClick={handleSubmit}>Predict</button>
 
       {prediction !== null && (
-        <h2>📈 Predicted Bikes: <strong>{prediction}</strong></h2>
+        <h2 className='mt-5 text-md'>Predicted Bikes: <strong>{prediction}</strong></h2>
       )}
     </div>
   );
