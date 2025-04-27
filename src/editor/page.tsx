@@ -83,7 +83,7 @@ export default function Page() {
   }
 
   return (
-    <div className="p-6 max-w-3xl mx-auto">
+    <div className="p-6 max-w-3xl mx-auto flex-col content-center justify-center">
       <h1 className="text-2xl font-bold mb-4">Chrono Note</h1>
       <Editor initialContent={reconstructed} onSnapshot={handleSnapshot} />
 
