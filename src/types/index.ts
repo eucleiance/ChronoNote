@@ -1,16 +1,4 @@
 export type StrokeAction = {
+  content: any // we are saving JSON now
   timestamp: number
-  content: string
 }
-
-
-
-
-// export type StrokeAction = {
-//   action: 'insert' | 'delete'
-//   char?: string
-//   pos: number
-//   timestamp: number
-// }
-
-

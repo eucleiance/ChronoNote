@@ -1,88 +1,102 @@
 'use client'
 
-import { useCallback, useEffect, useState } from 'react'
 import Editor from './Editor'
 import { StrokeAction } from '../types/index'
+import { useCallback, useEffect, useState } from 'react'
+import { saveSnapshot, loadAllSnapshots } from '../lib/idb'
 
 export default function Page() {
   const [logs, setLogs] = useState<StrokeAction[]>([])
-  const [latestContent, setLatestContent] = useState('')
-  const [isReplaying, setIsReplaying] = useState(false)
+  const [reconstructed, setReconstructed] = useState<any>(null)
+  const [storageUsed, setStorageUsed] = useState<number>(0)
 
-  // Load logs from localStorage on mount
-  useEffect(() => {
-    const stored = localStorage.getItem('strokeLogs')
-    if (stored) {
-      try {
-        const parsed: StrokeAction[] = JSON.parse(stored)
-        console.log('[Page] Loaded logs from localStorage:', parsed)
-        setLogs(parsed)
-        if (parsed.length > 0) {
-          setLatestContent(parsed[parsed.length - 1].content)
-        }
-      } catch (err) {
-        console.error('[Page] Error parsing localStorage:', err)
-      }
-    }
+  const reconstructContent = useCallback((logs: StrokeAction[]) => {
+    if (logs.length === 0) return null
+    const latest = logs[logs.length - 1].content
+    console.log('[Page] Reconstructed content:', latest)
+    return latest
   }, [])
 
-  // Save logs to localStorage whenever logs change
+  // Load from IndexedDB on mount
   useEffect(() => {
-    if (logs.length > 0) {
-      console.log('[Page] Saving logs to localStorage:', logs)
-      localStorage.setItem('strokeLogs', JSON.stringify(logs))
-    } else {
-      console.warn('[Page] Not saving empty logs to localStorage')
-    }
-  }, [logs])
+    async function loadSnapshots() {
+      try {
+        const snapshots = await loadAllSnapshots()
+        console.log('[Page] Loaded from IndexedDB:', snapshots)
+        const parsed: StrokeAction[] = snapshots.map((snap) => ({
+          content: snap.content,
+          timestamp: snap.timestamp
+        }))
+        setLogs(parsed)
+        const content = reconstructContent(parsed)
+        setReconstructed(content)
 
-  const handleSnapshot = useCallback((action: StrokeAction) => {
+        // Calculate storage usage (in KB)
+        const totalBytes = snapshots.reduce((sum, snap) => {
+          const contentSize = new TextEncoder().encode(snap.content).length
+          return sum + contentSize
+        }, 0)
+        setStorageUsed(totalBytes / 1024) // KB
+      } catch (err) {
+        console.error('[Page] Error loading from IndexedDB:', err)
+      }
+    }
+    loadSnapshots()
+  }, [reconstructContent])
+
+  // Save a snapshot and calculate the storage used after each keystroke
+  const handleSnapshot = useCallback(async (action: StrokeAction) => {
+    // Save the snapshot in IndexedDB
+    await saveSnapshot(action.content)
+
+    // Add new snapshot to logs
     setLogs((prevLogs) => {
       const newLogs = [...prevLogs, action]
       console.log('[Page] Adding new snapshot:', action)
       return newLogs
     })
+
+    // Recalculate storage usage after adding a new snapshot
+    const snapshots = await loadAllSnapshots() // Get all snapshots
+    const totalBytes = snapshots.reduce((sum, snap) => {
+      const contentSize = new TextEncoder().encode(snap.content).length
+      return sum + contentSize
+    }, 0)
+    setStorageUsed(totalBytes / 1024) // Update storage used (in KB)
   }, [])
 
-  const handleReplay = useCallback(() => {
+  // Replay the content step by step
+  const handleReplay = () => {
+    console.log('[Page] Starting Replay...')
     if (logs.length === 0) return
 
-    setIsReplaying(true)
     let index = 0
-
     const interval = setInterval(() => {
-      setLatestContent(logs[index].content)
-      console.log('[Replay] Showing snapshot:', logs[index])
-
-      index++
-
       if (index >= logs.length) {
         clearInterval(interval)
-        setIsReplaying(false)
-        console.log('[Replay] Finished replaying.')
+        console.log('[Page] Replay finished')
+        return
       }
-    }, 100) // 500ms per snapshot, you can adjust
-  }, [logs])
+      setReconstructed(logs[index].content)
+      index++
+    }, 100)
+  }
 
   return (
-    <div className="p-6 max-w-3xl mx-auto flex-col align-middle">
+    <div className="p-6 max-w-3xl mx-auto">
       <h1 className="text-2xl font-bold mb-4">Chrono Note</h1>
+      <Editor initialContent={reconstructed} onSnapshot={handleSnapshot} />
 
-      <Editor initialContent={latestContent} onSnapshot={handleSnapshot} />
+      <p className="text-gray-500 mt-6">Snapshots saved: {logs.length}</p>
+      <p className="text-gray-500">Storage used: {storageUsed.toFixed(2)} KB</p>
 
-      <p className="text-gray-500 mt-6">
-        Snapshots captured: {logs.length}
-      </p>
-
-      <div className="mt-2 gap-4">
+      <div className="mt-4 gap-4 items-center">
         <button
+          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
           onClick={handleReplay}
-          disabled={isReplaying}
-          className="px-4 py-2 bg-blue-600 text-white rounded-md disabled:opacity-50"
         >
-          {isReplaying ? 'Replaying...' : 'Replay'}
+          Replay
         </button>
-
       </div>
     </div>
   )

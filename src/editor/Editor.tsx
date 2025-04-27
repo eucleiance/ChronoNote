@@ -9,26 +9,26 @@ export default function Editor({
   initialContent,
   onSnapshot,
 }: {
-  initialContent: string
+  initialContent: any // JSON now
   onSnapshot: (action: StrokeAction) => void
 }) {
   const editor = useEditor({
     extensions: [StarterKit],
     content: initialContent,
     onUpdate: ({ editor }) => {
-      const html = editor.getHTML() // 👈 Use getHTML() instead of getText()
+      const json = editor.getJSON()
       const timestamp = Date.now()
-      console.log('[Editor] Capturing snapshot:', html)
+      console.log('[Editor] Capturing snapshot:', json)
 
       onSnapshot({
-        content: html,
+        content: json, // save JSON instead of string
         timestamp,
       })
     },
   })
 
   useEffect(() => {
-    if (editor && initialContent !== editor.getHTML()) { // 👈 Compare HTML not Text
+    if (editor && JSON.stringify(initialContent) !== JSON.stringify(editor.getJSON())) {
       console.log('[effect] Setting editor content to:', initialContent)
       editor.commands.setContent(initialContent, false)
     }
