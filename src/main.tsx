@@ -4,7 +4,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import App from './App.tsx'
 import PredictionForm from './mbtp/PredictionForm.tsx' // ⬅️ You'll create this next
 import Page from './editor/page.tsx'
-import Editor from './editor/Editor.tsx'
+// import Editor from './editor/Editor.tsx'
 
 import './styles/index.css'
 
