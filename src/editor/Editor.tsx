@@ -18,7 +18,7 @@ export default function Editor({
     onUpdate: ({ editor }) => {
       const json = editor.getJSON()
       const timestamp = Date.now()
-      console.log('[Editor] Capturing snapshot:', json)
+      // console.log('[Editor] Capturing snapshot:', json)
 
       onSnapshot({
         content: json, // save JSON instead of string
@@ -29,7 +29,7 @@ export default function Editor({
 
   useEffect(() => {
     if (editor && JSON.stringify(initialContent) !== JSON.stringify(editor.getJSON())) {
-      console.log('[effect] Setting editor content to:', initialContent)
+      // console.log('[effect] Setting editor content to:', initialContent)
       editor.commands.setContent(initialContent, false)
     }
   }, [initialContent, editor])

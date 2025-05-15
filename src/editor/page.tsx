@@ -13,7 +13,7 @@ export default function Page() {
   const reconstructContent = useCallback((logs: StrokeAction[]) => {
     if (logs.length === 0) return null
     const latest = logs[logs.length - 1].content
-    console.log('[Page] Reconstructed content:', latest)
+    // console.log('[Page] Reconstructed content:', latest)
     return latest
   }, [])
 
@@ -22,7 +22,7 @@ export default function Page() {
     async function loadSnapshots() {
       try {
         const snapshots = await loadAllSnapshots()
-        console.log('[Page] Loaded from IndexedDB:', snapshots)
+        // console.log('[Page] Loaded from IndexedDB:', snapshots)
         const parsed: StrokeAction[] = snapshots.map((snap) => ({
           content: snap.content,
           timestamp: snap.timestamp
@@ -38,7 +38,7 @@ export default function Page() {
         }, 0)
         setStorageUsed(totalBytes / 1024) // KB
       } catch (err) {
-        console.error('[Page] Error loading from IndexedDB:', err)
+        // console.error('[Page] Error loading from IndexedDB:', err)
       }
     }
     loadSnapshots()
@@ -52,7 +52,7 @@ export default function Page() {
     // Add new snapshot to logs
     setLogs((prevLogs) => {
       const newLogs = [...prevLogs, action]
-      console.log('[Page] Adding new snapshot:', action)
+      // console.log('[Page] Adding new snapshot:', action)
       return newLogs
     })
 
@@ -67,14 +67,14 @@ export default function Page() {
 
   // Replay the content step by step
   const handleReplay = () => {
-    console.log('[Page] Starting Replay...')
+    // console.log('[Page] Starting Replay...')
     if (logs.length === 0) return
 
     let index = 0
     const interval = setInterval(() => {
       if (index >= logs.length) {
         clearInterval(interval)
-        console.log('[Page] Replay finished')
+        // console.log('[Page] Replay finished')
         return
       }
       setReconstructed(logs[index].content)

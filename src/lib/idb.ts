@@ -3,13 +3,18 @@
 export const DB_NAME = 'ChronoNoteDB'
 export const STORE_NAME = 'Snapshots'
 
+
 export function openDB(): Promise<IDBDatabase> {
   return new Promise((resolve, reject) => {
-    const request = indexedDB.open(DB_NAME, 1)
+    // Incremented version number to 2 to handle upgrades
+    const request = indexedDB.open(DB_NAME, 2)
 
     request.onupgradeneeded = (event) => {
       const db = (event.target as IDBOpenDBRequest).result
-      db.createObjectStore(STORE_NAME, { keyPath: 'id', autoIncrement: true })
+      // Check if the object store already exists to avoid errors during upgrades
+      if (!db.objectStoreNames.contains(STORE_NAME)) {
+        db.createObjectStore(STORE_NAME, { keyPath: 'id', autoIncrement: true })
+      }
     }
 
     request.onsuccess = () => {
@@ -21,6 +26,9 @@ export function openDB(): Promise<IDBDatabase> {
     }
   })
 }
+
+
+
 
 export async function saveSnapshot(content: string) {
   const db = await openDB()

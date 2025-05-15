@@ -1,21 +1,50 @@
-# React + TypeScript + Vite
+# ChronoNote
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern note-taking application with time-travel capabilities. Built with React and TipTap editor, featuring persistent storage using IndexedDB.
 
-While this project uses React, Vite supports many popular JS frameworks. [See all the supported frameworks](https://vitejs.dev/guide/#scaffolding-your-first-vite-project).
+Try it live at [chrononote.vercel.app](https://chrononote.vercel.app)
 
-## Deploy Your Own
+## Features
 
-Deploy your own Vite project with Vercel.
+- Rich text editing powered by TipTap
+- Automatic snapshot creation for time-travel
+- Persistent storage using IndexedDB
+- Storage usage tracking
+- Snapshot replay functionality
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/vercel/examples/tree/main/framework-boilerplates/vite-react&template=vite-react)
+## Implementation Details
 
-_Live Example: https://vite-react-example.vercel.app_
+### Editor Component
 
-### Deploying From Your Terminal
+The editor is implemented using TipTap, a headless editor framework based on ProseMirror. The main components are:
 
-You can deploy your new Vite project with a single command from your terminal using [Vercel CLI](https://vercel.com/download):
+#### Editor.tsx
+- Uses `@tiptap/react` for the core editor functionality
+- Implements the StarterKit extension for basic editing features
+- Captures snapshots on content updates
+- Maintains JSON-based content structure
+- Provides a clean, focused editing interface
 
-```shell
-$ vercel
-```
+#### page.tsx
+- Manages the main editor page layout
+- Handles snapshot management and storage
+- Tracks storage usage
+- Provides replay functionality for time-travel
+- Displays snapshot count and storage metrics
+
+### Storage
+
+The application uses IndexedDB for persistent storage, allowing:
+- Efficient storage of editor snapshots
+- Persistent data across browser sessions
+- Storage usage monitoring
+- Snapshot history management
+
+## Tech Stack
+
+- React 18
+- TypeScript
+- TipTap Editor
+- IndexedDB
+- Tailwind CSS
+
